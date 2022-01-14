@@ -81,4 +81,9 @@ class Student(models.Model):
     def __str__(self):
         return self.user.email
 
+class Room(models.Model):
+    room_number = models.CharField(max_length=20, unique=True)
+    roll_number = models.CharField(max_length=20, default="0")
 
+    def __str__(self):
+        return self.room_number
