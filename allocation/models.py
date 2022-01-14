@@ -69,4 +69,16 @@ class User(AbstractUser):
     def __str__(self):
         return self.email
 
+class Student(models.Model):
+    user = models.OneToOneField(User, related_name='student', on_delete=models.CASCADE)
+    roll_number = models.CharField(max_length=20, unique=True)
+    is_allotted = models.BooleanField(default=False)
+    phone_number = models.CharField(max_length=20)
+
+    def get_full_name(self):
+        return self.user.first_name + " " + self.user.last_name
+
+    def __str__(self):
+        return self.user.email
+
 
