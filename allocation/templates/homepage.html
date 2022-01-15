@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block head_block %}
+<style media="screen">
+
+    .showme {
+        display: none;
+    }
+
+    .card:hover .showme {
+        display: block;
+    }
+
+</style>
+{% endblock %}
+
+{% block body_block %}
+<h2>Hello {{student.first_name}} {{student.last_name}}</h2>
+<a class="btn btn-primary" style="text-align: right;" href="{% url 'allocation:logout' %}" role="button">Logout</a>
+<br>
+<br>
+<br>
+
+<div>
+    <div class="card-columns" id="cards">
+    </div>
+</div>
+
+<div>
+    <a class="btn btn-primary btn-lg" role="button" id="confirm">Confirm</a>
+</div>
+
+{{ student|json_script:"student" }}
+{{ rooms|json_script:"rooms" }}
+<script>
+    let confirmButton = document.getElementById("confirm");
+    confirmButton.style.display = "none";
+
+    const student = JSON.parse(document.getElementById('student').textContent);
+    const rooms = JSON.parse(document.getElementById('rooms').textContent);
+
+    let cards = document.getElementById("cards");
+    let selectedCard = null;
+    let selectedRoomNumber = null;
+    for(let i=0; i<rooms.length; i++) {
+        let room = rooms[i];
+        let div1 = document.createElement("div");
+        div1.className = "card";
+        div1.style.maxWidth = "18rem";
+        div1.style.backgroundColor = "red";
+        if(room.roll_number==="0") {
+            div1.style.backgroundColor = "grey";
+            if(!student.is_allotted) {
+                div1.onclick = function() {
+                    if(selectedCard!=null) {
+                        selectedCard.style.backgroundColor = "grey";
+                    }
+                    div1.style.backgroundColor = "pink";
+                    selectedCard = div1;
+                    selectedRoomNumber = room.room_number;
+                    console.log(selectedRoomNumber);
+                    confirmButton.style.display = "block";
+                }
+            }
+            
+        }
+        if(room.roll_number===student.roll_number) {
+            div1.style.backgroundColor = "green";
+        }
+        let div2 = document.createElement("div");
+        div2.className = "card-body";
+        let head5 = document.createElement("h5");
+        head5.className = "card-title";
+        head5.innerText = room.room_number;
+        div2.appendChild(head5);
+        if(room.roll_number!="0") {
+            let p1 = document.createElement("P");
+            let p2 = document.createElement("P");
+            let p3 = document.createElement("P");
+            p1.innerText = "Allocated to: "+room.first_name+" "+room.last_name;
+            p2.innerText = "Roll No: "+room.roll_number;
+            p3.innerText = "Phone: "+room.phone_number;
+            p1.className = "showme";
+            p2.className = "showme";
+            p3.className = "showme";
+            div2.appendChild(p1);
+            div2.appendChild(p2);
+            div2.appendChild(p3);
+        }
+        div1.appendChild(div2);
+        cards.appendChild(div1);
+    }
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    const csrftoken = getCookie('csrftoken');
+    confirmButton.onclick = function() {
+        if(selectedRoomNumber!=null) {
+            console.log(selectedRoomNumber);
+            var url = "allocate/"+student.user_id+"/"+selectedRoomNumber;
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: {
+                    csrfmiddlewaretoken: csrftoken,
+                },
+                success: function(data) {
+                    window.location.reload();
+                }
+            })
+        }
+    }
+</script>
+
+{% endblock %}

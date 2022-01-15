@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block body_block %}
+<script type="text/javascript">
+function reset() {
+  document.getElementById("gcs_form").reset();
+}
+</script>
+<h2>Student SignUp</h2>
+
+<div id="gcs_form" class="jumbotron">
+  <form action="{% url 'allocation:student_signup' %}" method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="text" class="form-control" id="email" name="email" value="" placeholder="Please enter your email" required>
+      </div>
+
+      <div class="form-group">
+        <label for="first_name">First Name</label>
+        <input type="text" class="form-control" id="first_name" name="first_name" value="" placeholder="Please enter your first name" required>
+      </div>
+
+      <div class="form-group">
+        <label for="last_name">First Name</label>
+        <input type="text" class="form-control" id="last_name" name="last_name" value="" placeholder="Please enter your last name" required>
+      </div>
+
+      <div class="form-group">
+        <label for="roll">Roll</label>
+        <input type="text" class="form-control" id="roll" name="roll" value="" placeholder="Please enter your roll" required>
+      </div>     
+
+      <div class="form-group">
+        <label for="phone">Phone</label>
+        <input type="text" class="form-control" id="phone" name="phone" value="" placeholder="Please enter your phone number" required>
+      </div>     
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" class="form-control" id="password" name="password" placeholder="Please enter your password" required>
+      </div>
+
+      <div>
+          <button type="submit" class="btn btn-primary" onsubmit="reset()">Submit</button>
+      </div>
+  </form>
+  <div class="text-center">
+    <a class="btn btn-primary" href="{% url 'allocation:student_login' %}">Log In</a>
+  </div>
+</div>
+
+{% endblock %}
