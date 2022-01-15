@@ -1,0 +1,1 @@
+web: gunicorn room_allocation.wsgi --log-file -
