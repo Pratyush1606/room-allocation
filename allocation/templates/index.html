@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block body_block %}
+<h2>Room Allocation Portal</h2>
+<div class="jumbotron">
+  {% if message %}
+    <div class="alert alert-success">
+      <h3>Files successfully uploaded!</h3>
+    </div>
+  {% endif %}
+  <h3>Select User Type</h3>
+  <br>
+  <ul>
+    <li>  <p> <a href="{% url 'admin:index' %}">Admin</a></p></li>
+    <li>  <p> <a href="{% url 'allocation:student_login' %}">Student</a></p></li>
+  </ul>
+</div>
+
+
+{% endblock %}
